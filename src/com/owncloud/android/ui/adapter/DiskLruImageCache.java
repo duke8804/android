@@ -50,7 +50,8 @@ public class DiskLruImageCache {
             
     private static final String TAG = DiskLruImageCache.class.getSimpleName();
 
-    private Map<String, SoftReference<Bitmap>> mBitmapCache = Collections.synchronizedMap(new HashMap<String, SoftReference<Bitmap>>());
+    private Map<String, SoftReference<Bitmap>> mBitmapCache =
+            Collections.synchronizedMap(new HashMap<String, SoftReference<Bitmap>>());
 
     //public DiskLruImageCache( Context context,String uniqueName, int diskCacheSize,
     public DiskLruImageCache(
@@ -86,12 +87,13 @@ public class DiskLruImageCache {
             if(mBitmapCache.containsKey(key)) {
                 mBitmapCache.remove(key);
                 if ( BuildConfig.DEBUG ) {
-                    Log_OC.d( "cache_test_DISK_", "image alredy existed in memory cache and was removed " + validKey );
+                    Log_OC.d( TAG, "cache_test_DISK_ image: " +
+                            "already existed in memory cache and was removed " + validKey );
                 }
             }
             mBitmapCache.put(key, new SoftReference<Bitmap>(data));
             if ( BuildConfig.DEBUG ) {
-                Log_OC.d( "cache_test_DISK_", "image put into memory cache " + validKey );
+                Log_OC.d( TAG, "cache_test_DISK_ image: put into memory cache " + validKey );
             }
 
             editor = mDiskCache.edit( validKey );
@@ -103,17 +105,20 @@ public class DiskLruImageCache {
                 mDiskCache.flush();
                 editor.commit();
                 if ( BuildConfig.DEBUG ) {
-                   Log_OC.d( "cache_test_DISK_", "image put on disk cache " + validKey );
+                   Log_OC.d(TAG, "cache_test_DISK_ image: " +
+                           "image put on disk cache " + validKey );
                 }
             } else {
                 editor.abort();
                 if ( BuildConfig.DEBUG ) {
-                    Log_OC.d( "cache_test_DISK_", "ERROR on: image put on disk cache " + validKey );
+                    Log_OC.d(TAG, "cache_test_DISK_ image: " +
+                            "ERROR on: image put on disk cache " + validKey );
                 }
             }   
         } catch (IOException e) {
             if ( BuildConfig.DEBUG ) {
-                Log_OC.d( "cache_test_DISK_", "ERROR on: image put on disk cache " + validKey );
+                Log_OC.d(TAG, "cache_test_DISK_ image: " +
+                        "ERROR on: image put on disk cache " + validKey );
             }
             try {
                 if ( editor != null ) {
@@ -163,7 +168,7 @@ public class DiskLruImageCache {
         }
 
         if ( BuildConfig.DEBUG ) {
-            Log_OC.d("cache_test_DISK_", bitmap == null ? 
+            Log_OC.d(TAG, "cache_test_DISK_ image: " + bitmap == null ?
                     "not found" : "image read from disk " + validKey);
         }
 
@@ -195,7 +200,7 @@ public class DiskLruImageCache {
 
     public void clearCache() {
         if ( BuildConfig.DEBUG ) {
-            Log_OC.d( "cache_test_DISK_", "disk and memory cache CLEARED");
+            Log_OC.d(TAG, "cache_test_DISK_ image: disk and memory cache CLEARED");
         }
         try {
             mBitmapCache.clear();
